@@ -88,13 +88,19 @@ server.put('/api/users/:id', (req, res) => {
     Users.update(id, newUser)
       .then(data => {
         if (data === 0) {
-          res
-            .status(404)
-            .json({
-              message: 'The user with the specified ID does not exist.'
-            });
+          res.status(404).json({
+            message: 'The user with the specified ID does not exist.'
+          });
         } else {
-          res.status(201).json(data);
+          Users.findById(id)
+            .then(data => {
+              res.status(200).json(data);
+            })
+            .catch(error => {
+              res
+                .status(404)
+                .json({ message: "Couldn't retrieve the updated user" });
+            });
         }
       })
       .catch(err => {
