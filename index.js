@@ -15,7 +15,9 @@ server.get('/api/users', (req, res) => {
       }
     })
     .catch(err => {
-      res.status(500).json(`Error while fetching posts: ${err}`);
+      res
+        .status(500)
+        .json({ error: 'The users information could not be retrieved.' });
     });
 });
 
@@ -45,11 +47,9 @@ server.post('/api/users', (req, res) => {
         res.status(201).json(data);
       })
       .catch(err => {
-        res
-          .status(500)
-          .json({
-            error: 'There was an error while saving the user to the database'
-          });
+        res.status(500).json({
+          error: 'There was an error while saving the user to the database'
+        });
       });
   } else {
     res
