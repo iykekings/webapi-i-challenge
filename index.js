@@ -30,11 +30,15 @@ server.get('/api/users/:id', (req, res) => {
       if (data) {
         res.status(200).json(data);
       } else {
-        res.status(404).json('No user with that id');
+        res
+          .status(404)
+          .json({ message: 'The user with the specified ID does not exist.' });
       }
     })
     .catch(err => {
-      res.status(500).json('Error while fetching user');
+      res
+        .status(500)
+        .json({ error: 'The user information could not be retrieved.' });
     });
 });
 
@@ -63,10 +67,16 @@ server.delete('/api/users/:id', (req, res) => {
   const { id } = req.params;
   Users.remove(id)
     .then(data => {
-      res.status(201).json(data);
+      if (data === 0) {
+        res
+          .status(404)
+          .json({ message: 'The user with the specified ID does not exist.' });
+      } else {
+        res.status(201).json(data);
+      }
     })
     .catch(err => {
-      res.status(500).json('Error while deleting user');
+      res.status(500).json({ error: 'The user could not be removed' });
     });
 });
 
@@ -74,13 +84,29 @@ server.delete('/api/users/:id', (req, res) => {
 server.put('/api/users/:id', (req, res) => {
   const { id } = req.params;
   const newUser = req.body;
-  Users.update(id, newUser)
-    .then(data => {
-      res.status(201).json(data);
-    })
-    .catch(err => {
-      res.status(500).json('Error while updating user');
-    });
+  if (newUser.name && newUser.bio) {
+    Users.update(id, newUser)
+      .then(data => {
+        if (data === 0) {
+          res
+            .status(404)
+            .json({
+              message: 'The user with the specified ID does not exist.'
+            });
+        } else {
+          res.status(201).json(data);
+        }
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .json({ error: 'The user information could not be modified.' });
+      });
+  } else {
+    res
+      .status(400)
+      .json({ errorMessage: 'Please provide name and bio for the user.' });
+  }
 });
 
 server.listen(3000, () => {
