@@ -39,13 +39,23 @@ server.get('/api/users/:id', (req, res) => {
 //create user
 server.post('/api/users', (req, res) => {
   const user = req.body;
-  Users.insert(user)
-    .then(data => {
-      res.status(201).json(data);
-    })
-    .catch(err => {
-      res.status(500).json('Error while creating user');
-    });
+  if (user.name && user.bio) {
+    Users.insert(user)
+      .then(data => {
+        res.status(201).json(data);
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .json({
+            error: 'There was an error while saving the user to the database'
+          });
+      });
+  } else {
+    res
+      .status(400)
+      .json({ errorMessage: 'Please provide name and bio for the user.' });
+  }
 });
 
 //delete user
