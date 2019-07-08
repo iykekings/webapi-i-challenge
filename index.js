@@ -1,7 +1,9 @@
-const server = require('express')();
+const express = require('express');
+const server = express();
 const Users = require('./data/db');
 const PORT = 3000;
 
+server.use(express.json());
 //fetch all users from db
 server.get('/api/users', (reg, res) => {
   Users.find()
@@ -31,6 +33,19 @@ server.get('/api/users/:id', (req, res) => {
     })
     .catch(err => {
       res.status(500).json('Error when fetching user');
+    });
+});
+
+//create user
+
+server.post('/api/users', (req, res) => {
+  const user = req.body;
+  Users.insert(user)
+    .then(data => {
+      res.status(201).json(data);
+    })
+    .catch(err => {
+      res.status(500).json('Error when creating user');
     });
 });
 
