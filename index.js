@@ -5,7 +5,7 @@ const PORT = 3000;
 
 server.use(express.json());
 //fetch all users from db
-server.get('/api/users', (reg, res) => {
+server.get('/api/users', (req, res) => {
   Users.find()
     .then(data => {
       if (data.length) {
@@ -15,7 +15,7 @@ server.get('/api/users', (reg, res) => {
       }
     })
     .catch(err => {
-      res.status(500).json(`Error fetching posts: ${err}`);
+      res.status(500).json(`Error while fetching posts: ${err}`);
     });
 });
 
@@ -32,12 +32,11 @@ server.get('/api/users/:id', (req, res) => {
       }
     })
     .catch(err => {
-      res.status(500).json('Error when fetching user');
+      res.status(500).json('Error while fetching user');
     });
 });
 
 //create user
-
 server.post('/api/users', (req, res) => {
   const user = req.body;
   Users.insert(user)
@@ -45,7 +44,19 @@ server.post('/api/users', (req, res) => {
       res.status(201).json(data);
     })
     .catch(err => {
-      res.status(500).json('Error when creating user');
+      res.status(500).json('Error while creating user');
+    });
+});
+
+//delete user
+server.delete('/api/users/:id', (req, res) => {
+  const { id } = req.params;
+  Users.remove(id)
+    .then(data => {
+      res.status(201).json(data);
+    })
+    .catch(err => {
+      res.status(500).json('Error while deleting user');
     });
 });
 
