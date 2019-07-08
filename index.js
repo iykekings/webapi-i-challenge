@@ -60,6 +60,19 @@ server.delete('/api/users/:id', (req, res) => {
     });
 });
 
+// update user
+server.put('/api/users/:id', (req, res) => {
+  const { id } = req.params;
+  const newUser = req.body;
+  Users.update(id, newUser)
+    .then(data => {
+      res.status(201).json(data);
+    })
+    .catch(err => {
+      res.status(500).json('Error while updating user');
+    });
+});
+
 server.listen(3000, () => {
   console.log(`Server running at http://localhost/api/users/${PORT}`);
 });
