@@ -17,6 +17,23 @@ server.get('/api/users', (reg, res) => {
     });
 });
 
+//fetch single user with id
+
+server.get('/api/users/:id', (req, res) => {
+  const { id } = req.params;
+  Users.findById(id)
+    .then(data => {
+      if (data) {
+        res.status(200).json(data);
+      } else {
+        res.status(404).json('No user with that id');
+      }
+    })
+    .catch(err => {
+      res.status(500).json('Error when fetching user');
+    });
+});
+
 server.listen(3000, () => {
   console.log(`Server running at http://localhost/api/users/${PORT}`);
 });
