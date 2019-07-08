@@ -1,9 +1,11 @@
 const express = require('express');
 const server = express();
 const Users = require('./data/db');
+const cors = require('cors');
 const PORT = 3000;
 
 server.use(express.json());
+server.use(cors());
 //fetch all users from db
 server.get('/api/users', (req, res) => {
   Users.find()
